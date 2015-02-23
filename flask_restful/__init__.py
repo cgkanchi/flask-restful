@@ -20,7 +20,16 @@ import operator
 
 __all__ = ('Api', 'Resource', 'marshal', 'marshal_with', 'marshal_with_field', 'abort')
 
+class ApiMock(object):
+    def __init__(self, mock_data, response_code=200):
+        self.mock_data = mock_data
+        self.response_code = response_code
 
+    def __call__(self, func):
+        decorator_self = self
+        def wrap(*args, **kwargs):
+            return self.mock_data, self.response_code
+            
 def abort(http_status_code, **kwargs):
     """Raise a HTTPException for the given http_status_code. Attach any keyword
     arguments to the exception for later processing.
@@ -520,7 +529,9 @@ class Api(object):
 
         response.headers['WWW-Authenticate'] = challenge
         return response
-
+    
+               
+        
 
 class Resource(MethodView):
     """
